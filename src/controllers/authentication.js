@@ -2,7 +2,7 @@ const { error } = require('console')
 const User  = require('../models/users')
 const crypto = require('crypto')
 
-const signup = (request, response) => {
+const signup = (request, response) => { // create - post request
     const {name,email, password } = request.body
     console.log(User)
     User.findOne({email})
@@ -12,8 +12,8 @@ const signup = (request, response) => {
                 error : "user with this email already present"
             })
         }
-        const salt = crypto.randomBytes(16)
-        const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512')
+        const salt = crypto.randomBytes(16).toString('hex')
+        const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex')
         const user = new User({email, name, hash, salt})
         user.save()
         .then((savedUser) =>{
@@ -70,6 +70,7 @@ const login = (request,response) => {
     })
  
 } 
+
 module.exports = {
     signup,
     login
